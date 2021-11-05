@@ -8,3 +8,23 @@ abstract class FetchMealsState extends Equatable {
 }
 
 class FetchMealsInitial extends FetchMealsState {}
+
+class FetchMealsLoading extends FetchMealsState {}
+
+class FetchMealsSuccess extends FetchMealsState {
+  const FetchMealsSuccess(this.data);
+
+  final List<Meal> data;
+
+  @override
+  List<Object> get props => [data];
+}
+
+class FetchMealsFailure extends FetchMealsState {
+  const FetchMealsFailure(this.message);
+
+  final String message;
+
+  @override
+  List<Object> get props => [message];
+}

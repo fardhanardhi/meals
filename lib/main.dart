@@ -5,8 +5,12 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:meals/api/api_client.dart';
 import 'package:meals/data/blocs/coba_db/coba_db_cubit.dart';
 import 'package:meals/data/blocs/fetch_categories/fetch_categories_cubit.dart';
+import 'package:meals/data/blocs/fetch_meals/fetch_meals_cubit.dart';
+import 'package:meals/data/blocs/set_fav/set_fav_cubit.dart';
 import 'package:meals/data/db/database.dart';
 import 'package:meals/data/repositories/category_repository.dart';
+import 'package:meals/data/repositories/meal_repository.dart';
+import 'package:meals/ui/screens/home_page.dart';
 
 void main() {
   return runApp(ModularApp(module: AppModule(), child: const AppWidget()));
@@ -29,7 +33,9 @@ class AppModule extends Module {
   List<Bind> get binds => [
         Bind.factory((i) => Client()),
         Bind.factory((i) => CategoryRepository(i<Client>().init(), i())),
+        Bind.factory((i) => MealRepository(i<Client>().init(), i())),
         Bind.singleton((i) => FetchCategoriesCubit(i(), i())..load()),
+        Bind.singleton((i) => FetchMealsCubit(i(), i())),
         Bind.singleton((i) => Database()),
       ];
 
@@ -61,76 +67,152 @@ class AppModule extends Module {
       ];
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+// class HomePage extends StatelessWidget {
+//   const HomePage({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    final fetchCategoriesCubit = Modular.get<FetchCategoriesCubit>();
+//   @override
+//   Widget build(BuildContext context) {
+//     final fetchCategoriesCubit = Modular.get<FetchCategoriesCubit>();
+//     final fetchMealsCubit = Modular.get<FetchMealsCubit>();
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => fetchCategoriesCubit),
-      ],
-      child: BlocConsumer<FetchCategoriesCubit, FetchCategoriesState>(
-        listener: (context, state) {
-          late String msg;
-          if (state is FetchCategoriesSuccess) {
-            msg = 'Sukses';
-          }
-          if (state is FetchCategoriesFailure) {
-            msg = 'Gagal';
-          }
-          if (state is FetchCategoriesSuccess ||
-              state is FetchCategoriesFailure) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text(msg),
-                  backgroundColor:
-                      state is FetchCategoriesFailure ? Colors.red : null,
-                ),
-              );
-          }
-          if (state is FetchCategoriesFailure) {
-            showDialog(
-              context: context,
-              builder: (context) => Dialog(
-                child: Text(state.message),
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(title: const Text('Home Page')),
-            body: Center(
-              child: Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () => Modular.to.pushNamed('/second'),
-                    child: const Text('Navigate to Second Page'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => fetchCategoriesCubit.load(),
-                    child: const Text('Load'),
-                  ),
-                  if (state is FetchCategoriesLoading)
-                    const CircularProgressIndicator(),
-                  if (state is FetchCategoriesSuccess)
-                    Text(
-                      state.data.map((e) => e.name).join(', '),
-                    ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
+//     return MultiBlocProvider(
+//       providers: [
+//         BlocProvider(create: (_) => fetchCategoriesCubit),
+//         BlocProvider(create: (_) => fetchMealsCubit),
+//       ],
+//       child: BlocConsumer<FetchCategoriesCubit, FetchCategoriesState>(
+//         listener: (context, state) {
+//           late String msg;
+//           if (state is FetchCategoriesSuccess) {
+//             if (state.data.isNotEmpty) {
+//               fetchMealsCubit.load(state.data.first);
+//             }
+//             msg = 'Sukses';
+//           }
+//           if (state is FetchCategoriesFailure) {
+//             msg = 'Gagal';
+//           }
+//           if (state is FetchCategoriesSuccess ||
+//               state is FetchCategoriesFailure) {
+//             ScaffoldMessenger.of(context)
+//               ..hideCurrentSnackBar()
+//               ..showSnackBar(
+//                 SnackBar(
+//                   content: Text(msg),
+//                   backgroundColor:
+//                       state is FetchCategoriesFailure ? Colors.red : null,
+//                 ),
+//               );
+//           }
+//           if (state is FetchCategoriesFailure) {
+//             showDialog(
+//               context: context,
+//               builder: (context) => Dialog(
+//                 child: Text(state.message),
+//               ),
+//             );
+//           }
+//         },
+//         builder: (context, catState) {
+//           return BlocBuilder<FetchMealsCubit, FetchMealsState>(
+//             builder: (context, mealState) {
+//               return Scaffold(
+//                 appBar: AppBar(title: const Text('Home Page')),
+//                 body: Center(
+//                   child: Column(
+//                     children: [
+//                       ElevatedButton(
+//                         onPressed: () => fetchCategoriesCubit.load(),
+//                         child: const Text('Load'),
+//                       ),
+//                       if (catState is FetchCategoriesLoading)
+//                         const CircularProgressIndicator(),
+//                       if (catState is FetchCategoriesSuccess)
+//                         SingleChildScrollView(
+//                           scrollDirection: Axis.horizontal,
+//                           child: Row(
+//                             children: [
+//                               for (var item in catState.data)
+//                                 ElevatedButton(
+//                                   onPressed: () {
+//                                     fetchMealsCubit.load(item);
+//                                   },
+//                                   child: Text(item.name),
+//                                 ),
+//                             ],
+//                           ),
+//                         ),
+//                       if (mealState is FetchMealsLoading)
+//                         const CircularProgressIndicator(),
+//                       if (mealState is FetchMealsSuccess)
+//                         Expanded(
+//                           child: ListView.separated(
+//                             itemBuilder: (context, id) =>
+//                                 MealItem(data: mealState.data[id]),
+//                             separatorBuilder: (_, __) => const Divider(),
+//                             itemCount: mealState.data.length,
+//                           ),
+//                         ),
+//                     ],
+//                   ),
+//                 ),
+//               );
+//             },
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+
+// class MealItem extends StatefulWidget {
+//   const MealItem({
+//     Key? key,
+//     required this.data,
+//   }) : super(key: key);
+
+//   final Meal data;
+
+//   @override
+//   State<MealItem> createState() => _MealItemState();
+// }
+
+// class _MealItemState extends State<MealItem> {
+//   late SetFavCubit _setFavCubit;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _setFavCubit = SetFavCubit(widget.data, Modular.get<MealRepository>());
+//   }
+
+//   @override
+//   void dispose() {
+//     super.dispose();
+//     _setFavCubit.close();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocProvider(
+//       create: (context) => _setFavCubit,
+//       child: BlocBuilder<SetFavCubit, bool>(
+//         builder: (context, state) {
+//           return ListTile(
+//             title: Text(widget.data.name),
+//             onTap: () => Modular.to.pushNamed('/second'),
+//             trailing: IconButton(
+//               onPressed: () => _setFavCubit.set(!state),
+//               icon: Icon(
+//                 state ? Icons.favorite : Icons.favorite_outline,
+//               ),
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
 
 class SecondPage extends StatelessWidget {
   const SecondPage({Key? key}) : super(key: key);

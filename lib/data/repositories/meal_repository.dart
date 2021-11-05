@@ -3,26 +3,35 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:meals/data/db/database.dart';
 import 'package:meals/data/models/category.dart';
+import 'package:meals/data/models/meal.dart';
 
-class CategoryRepository {
-  CategoryRepository(this._client, this._database);
+class MealRepository {
+  MealRepository(this._client, this._database);
 
   final Dio _client;
   final Database _database;
 
-  Future<CategoriesRes> fetchMealsByCategory() async {
+  Future<MealsRes> fetchMealsByCategory(String category) async {
     try {
-      final response = await _client.get('/categories.php');
-      return CategoriesRes.fromJson(response.toString());
+      final response = await _client.get('/filter.php?c=$category');
+      return MealsRes.fromJson(response.toString());
     } on DioError catch (ex) {
       String errorMessage = json.decode(ex.response.toString())["errorMessage"];
       throw Exception(errorMessage);
     }
   }
 
-  Future persistCategories(List<CategoriesCompanion> entries) async {
+  Future persistMeals(List<MealsCompanion> entries) async {
     try {
-      await _database.addCategories(entries);
+      await _database.addMeals(entries);
+    } catch (ex) {
+      throw Exception(ex);
+    }
+  }
+
+  Future updateMeal(Meal entry) async {
+    try {
+      await _database.updateMeal(entry);
     } catch (ex) {
       throw Exception(ex);
     }
