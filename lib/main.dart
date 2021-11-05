@@ -35,7 +35,6 @@ class AppModule extends Module {
         Bind.factory((i) => CategoryRepository(i<Client>().init(), i())),
         Bind.factory((i) => MealRepository(i<Client>().init(), i())),
         Bind.singleton((i) => FetchCategoriesCubit(i(), i())..load()),
-        Bind.singleton((i) => FetchMealsCubit(i(), i())),
         Bind.singleton((i) => Database()),
       ];
 
