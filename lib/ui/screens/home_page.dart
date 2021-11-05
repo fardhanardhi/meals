@@ -60,6 +60,12 @@ class HomePage extends StatelessWidget {
             child: Scaffold(
               appBar: AppBar(
                 title: const Text('Home Page'),
+                actions: [
+                  IconButton(
+                    onPressed: () => Modular.to.pushNamed('/favorite'),
+                    icon: const Icon(Icons.favorite),
+                  ),
+                ],
                 bottom: catState is FetchCategoriesSuccess
                     ? TabBar(
                         isScrollable: true,

@@ -10,6 +10,7 @@ import 'package:meals/data/blocs/set_fav/set_fav_cubit.dart';
 import 'package:meals/data/db/database.dart';
 import 'package:meals/data/repositories/category_repository.dart';
 import 'package:meals/data/repositories/meal_repository.dart';
+import 'package:meals/ui/screens/favorite_screen.dart';
 import 'package:meals/ui/screens/home_page.dart';
 
 void main() {
@@ -29,6 +30,24 @@ class AppWidget extends StatelessWidget {
 }
 
 class AppModule extends Module {
+  CustomTransition trans = CustomTransition(
+    transitionBuilder: (context, anim1, anim2, child) {
+      return SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(1, 0),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: anim1,
+            curve: Curves.fastOutSlowIn,
+            reverseCurve: Curves.easeOutQuad,
+          ),
+        ),
+        child: child,
+      );
+    },
+  );
+
   @override
   List<Bind> get binds => [
         Bind.factory((i) => Client()),
@@ -45,23 +64,13 @@ class AppModule extends Module {
           '/second',
           child: (context, args) => const SecondPage(),
           transition: TransitionType.custom,
-          customTransition: CustomTransition(
-            transitionBuilder: (context, anim1, anim2, child) {
-              return SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(1, 0),
-                  end: Offset.zero,
-                ).animate(
-                  CurvedAnimation(
-                    parent: anim1,
-                    curve: Curves.fastOutSlowIn,
-                    reverseCurve: Curves.easeOutQuad,
-                  ),
-                ),
-                child: child,
-              );
-            },
-          ),
+          customTransition: trans,
+        ),
+        ChildRoute(
+          '/favorite',
+          child: (context, args) => const FavoriteScreen(),
+          transition: TransitionType.custom,
+          customTransition: trans,
         ),
       ];
 }
