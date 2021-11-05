@@ -9,9 +9,11 @@ class CardMeal extends StatefulWidget {
   const CardMeal({
     Key? key,
     required this.data,
+    this.onFav,
   }) : super(key: key);
 
   final Meal data;
+  final VoidCallback? onFav;
 
   @override
   State<CardMeal> createState() => _CardMealState();
@@ -105,7 +107,10 @@ class _CardMealState extends State<CardMeal> {
                           icon: Icon(
                             state ? Icons.favorite : Icons.favorite_outline,
                           ),
-                          onPressed: () => _setFavCubit.set(!state),
+                          onPressed: () {
+                            _setFavCubit.set(!state);
+                            widget.onFav!();
+                          },
                         ),
                       ),
                     )

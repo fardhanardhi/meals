@@ -10,7 +10,7 @@ class FavMealsCubit extends Cubit<FavMealsState> implements Disposable {
 
   final Database database;
 
-  Future<void> load(Category category) async {
+  Future<void> load() async {
     emit(FavMealsLoading());
     try {
       List<Meal> res = await database.getMealsByFav();

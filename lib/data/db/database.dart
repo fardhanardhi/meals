@@ -49,7 +49,7 @@ class Database extends _$Database {
   @override
   MigrationStrategy get migration => MigrationStrategy(
         beforeOpen: (openingDetails) async {
-          if (true) {
+          if (false) {
             final m = Migrator(this);
             for (final table in allTables) {
               await m.deleteTable(table.actualTableName);

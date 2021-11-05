@@ -10,7 +10,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fetchCategoriesCubit = Modular.get<FetchCategoriesCubit>();
-    // final fetchMealsCubit = Modular.get<FetchMealsCubit>();
 
     return MultiBlocProvider(
       providers: [
@@ -59,7 +58,9 @@ class HomePage extends StatelessWidget {
                 title: const Text('Home Page'),
                 actions: [
                   IconButton(
-                    onPressed: () => Modular.to.pushNamed('/favorite'),
+                    onPressed: () async {
+                      await Modular.to.pushNamed('/favorite');
+                    },
                     icon: const Icon(Icons.favorite),
                   ),
                 ],
