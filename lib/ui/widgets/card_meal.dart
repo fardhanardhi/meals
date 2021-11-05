@@ -67,11 +67,16 @@ class _CardMealState extends State<CardMeal> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.network(
-                            'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/190326-spicy-salmon-bowl-horizontal-1556024100.png?crop=0.669xw:1.00xh;0.0308xw,0&resize=640:*',
-                            height: 100,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
+                          ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(5),
+                            ),
+                            child: Image.network(
+                              'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/190326-spicy-salmon-bowl-horizontal-1556024100.png?crop=0.669xw:1.00xh;0.0308xw,0&resize=640:*',
+                              height: 100,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
