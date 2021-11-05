@@ -140,7 +140,7 @@ class _TabItemState extends State<TabItem> {
                 crossAxisSpacing: 13,
               ),
               padding: const EdgeInsets.fromLTRB(15, 20, 15, 60),
-              itemCount: 10,
+              itemCount: mealState.data.length,
               itemBuilder: (BuildContext context, int id) => CardMeal(
                 data: mealState.data[id],
               ),
