@@ -55,12 +55,10 @@ class HomePage extends StatelessWidget {
                 catState is FetchCategoriesSuccess ? catState.data.length : 0,
             child: Scaffold(
               appBar: AppBar(
-                title: const Text('Home Page'),
+                title: const Text('Meals'),
                 actions: [
                   IconButton(
-                    onPressed: () async {
-                      await Modular.to.pushNamed('/favorite');
-                    },
+                    onPressed: () => Modular.to.pushNamed('/favorite'),
                     icon: const Icon(Icons.favorite),
                   ),
                 ],
