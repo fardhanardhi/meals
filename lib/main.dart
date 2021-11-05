@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:meals/api/api_client.dart';
 import 'package:meals/data/blocs/coba_db/coba_db_cubit.dart';
+import 'package:meals/data/blocs/fav_meals/fav_meals_cubit.dart';
 import 'package:meals/data/blocs/fetch_categories/fetch_categories_cubit.dart';
 import 'package:meals/data/blocs/fetch_meals/fetch_meals_cubit.dart';
 import 'package:meals/data/blocs/set_fav/set_fav_cubit.dart';
@@ -54,6 +55,7 @@ class AppModule extends Module {
         Bind.factory((i) => CategoryRepository(i<Client>().init(), i())),
         Bind.factory((i) => MealRepository(i<Client>().init(), i())),
         Bind.singleton((i) => FetchCategoriesCubit(i(), i())..load()),
+        Bind.singleton((i) => FavMealsCubit(i())),
         Bind.singleton((i) => Database()),
       ];
 

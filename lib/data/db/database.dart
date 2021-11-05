@@ -70,6 +70,10 @@ class Database extends _$Database {
     return (select(meals)..where((t) => t.id.equals(id))).getSingle();
   }
 
+  Future<List<Meal>> getMealsByFav() {
+    return (select(meals)..where((t) => t.favorited.equals(true))).get();
+  }
+
   Future<Category> getCategoryById(int id) {
     return (select(categories)..where((t) => t.id.equals(id))).getSingle();
   }
