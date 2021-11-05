@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:meals/data/db/database.dart';
-import 'package:meals/data/repositories/meal_repository.dart';
 
 part 'fav_meals_state.dart';
 
